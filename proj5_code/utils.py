@@ -50,13 +50,15 @@ def generate_random_stereogram(im_size: Tuple[int, int, int] = (51, 51, 3), disp
 
   H, W, C = im_size
   block_size = (H//2, W//2)
-  im_left = torch.zeros(1) #placeholder, not actual size
-  im_right = torch.zeros(1) #placeholder, not actual size
+  im_left = torch.zeros(im_size) #placeholder, not actual size
+  im_right = torch.zeros(im_size) #placeholder, not actual size
   ############################################################################
   # Student code begin
   ############################################################################
 
-  raise NotImplementedError("generate_random_stereogram not implemented")
+  num_samples = 100
+
+  hrand = np.random.randint(0, H, num_samples)
 
   ############################################################################
   # Student code end
