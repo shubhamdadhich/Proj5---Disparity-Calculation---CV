@@ -24,7 +24,10 @@ def ssd_similarity_measure(patch1: torch.Tensor, patch2: torch.Tensor) -> torch.
   # Student code begin
   ############################################################################
 
-  raise NotImplementedError('ssd_similarity_measure not implemented')
+  diff = torch.sub(patch1, patch2)
+
+  diffsqr = torch.mul(diff, diff)
+  ssd_value = torch.sum(diffsqr)
 
   ############################################################################
   # Student code end
@@ -53,7 +56,10 @@ def sad_similarity_measure(patch1: torch.Tensor, patch2: torch.Tensor) -> torch.
   # Student code begin
   ############################################################################
 
-  raise NotImplementedError('sad_similarity_measure not implemented')
+  diff = torch.sub(patch1, patch2)
+
+  diffabs = torch.abs(diff)
+  sad_value = torch.sum(diffabs)
 
   ############################################################################
   # Student code end

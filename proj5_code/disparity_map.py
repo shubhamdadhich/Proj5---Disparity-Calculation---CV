@@ -50,12 +50,28 @@ def calculate_disparity_map(left_img: torch.Tensor,
   """
 
   assert left_img.shape == right_img.shape
-  disparity_map = torch.zeros(1) #placeholder, this is not the actual size
+  disparity_map = torch.zeros(left_img.shape[0] - block_size + 1, left_img.shape[1] - block_size + 1)
   ############################################################################
   # Student code begin
   ############################################################################
 
-  raise NotImplementedError('calculate_disparity_map not implemented')
+  for i in range(disparity_map.shape[0]):
+    for j in  range(disparity_map.shape[1]):
+        if j - max_search_bound + 1< 0:
+            allowed_limit = j + 1
+        else:
+            allowed_limit = max_search_bound
+        dvals = np.array([])
+        for k in range(allowed_limit):
+            lpatch = left_img[i:i+block_size, j:j+block_size]
+            rpatch = right_img[i:i+block_size, j-k:j-k+block_size]
+            dval = sim_measure_function(lpatch, rpatch)
+            dvals = np.append(dvals, dval)
+        if len(dvals):
+            mindval = np.argmin(dvals)
+        else:
+            mindval = 0
+        disparity_map[i][j] = torch.tensor(mindval)
 
   ############################################################################
   # Student code end
@@ -104,7 +120,21 @@ def calculate_cost_volume(left_img: torch.Tensor,
   # Student code begin
   ############################################################################
 
-  raise NotImplementedError('calculate_cost_volume not implemented')
+  for i in range(cost_volume.shape[0]-block_size+1):
+    for j in  range(cost_volume.shape[1]-block_size+1):
+        if j - max_disparity + 1< 0:
+            allowed_limit = j + 1
+        else:
+            allowed_limit = max_disparity
+        dvals = torch.zeros(max_disparity)
+        for k in range(allowed_limit):
+            lpatch = left_img[i:i+block_size, j:j+block_size]
+            rpatch = right_img[i:i+block_size, j-k:j-k+block_size]
+            # print(lpatch.shape, rpatch.shape, i, j, k, max_disparity)
+            dval = sim_measure_function(lpatch, rpatch)
+            dvals[k] = int(dval)
+        # print(dvals)
+        cost_volume[i][j] = dvals
 
   ############################################################################
   # Student code end

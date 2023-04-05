@@ -56,9 +56,27 @@ def generate_random_stereogram(im_size: Tuple[int, int, int] = (51, 51, 3), disp
   # Student code begin
   ############################################################################
 
+  init_block_coords = [H//2 - block_size[0]//2, W//2 - block_size[0]//2]
+
   num_samples = 100
 
   hrand = np.random.randint(0, H, num_samples)
+  wrand = np.random.randint(0, W, num_samples)
+
+  im_left[hrand, wrand] = torch.ones(C)
+  im_right = im_left.detach().clone()
+
+  im_right[init_block_coords[0]:init_block_coords[0]+block_size[0], init_block_coords[1]-disparity:init_block_coords[1]-disparity+block_size[1]] = im_right[init_block_coords[0]:init_block_coords[0]+block_size[0], init_block_coords[1]:init_block_coords[1]+block_size[1]]
+
+  void = torch.zeros((block_size[0], disparity, C))
+  vsamplecount = int((block_size[0]*disparity)/(H*W)*num_samples) + 5
+
+  vhrand = np.random.randint(0, block_size[0], vsamplecount)
+  vwrand = np.random.randint(0, disparity, vsamplecount)
+
+  void[vhrand, vwrand] = torch.ones(C)
+
+  im_right[init_block_coords[0]:init_block_coords[0]+block_size[0], init_block_coords[1]-disparity+block_size[1]:init_block_coords[1]+block_size[1]] = void
 
   ############################################################################
   # Student code end
